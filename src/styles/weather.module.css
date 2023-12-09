@@ -1,0 +1,49 @@
+.weather_card{
+    width: 350px;
+    height: 600px;
+    background-color: #0b121e   ;
+    color: white;
+    border-radius: 20px;
+    border: none;
+    overflow: auto;
+}
+.input_felid{
+    padding: 10px 10px;
+    background-color:#202b3c;
+    outline: none;
+    font: 17px;
+    border: none;
+    border-radius: 10px;
+    width: 310px;
+    margin: 10px 10px;
+    color: white;
+}
+.weather_update{
+    text-align: center;
+    line-height: 10px;
+}
+.weather_icons{
+    width: 180px;
+    position: relative;
+    bottom: 30px;
+}
+.weather_details{
+    display: flex;
+    flex-wrap: wrap;
+}
+.weather_01{
+    background-color: #202b3c;
+    margin: 4px 10px;
+    width: 135px;
+    padding:5px 10px;
+    line-height: 15px;
+    border-radius: 10px;
+
+}
+.temp{
+    position: relative;
+    bottom: 30px;
+}
+.status{
+    font-size: 20px;
+}
