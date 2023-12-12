@@ -4,15 +4,31 @@ import Styles from "../styles/weather.module.css";
 function WeatherAppComponent() {
     const [CityName, setCityName] = useState("");
     const [WeatherData, setWeatherData] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false)
 
     async function getWeatherData() {
-        let API_key = "Fc45a8cd5911475371e262a26b9a0374";
-        let respones = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${CityName}&appid=${API_key}`);
-        let result = await respones.json();
-        if (result.cod !== "400") {
-            setWeatherData(result)
+        try {
+            let API_key = process.env.REACT_APP_API_KEY;
+            // console.log(API_key,"API_key");
+            // let API_key = "609cb45418e8608822ff1053f3bc3045";
+            setLoading(true)
+            let respones = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${CityName}&appid=${API_key}`);
+            let result = await respones.json();
+            if (result.cod === "404") {
+                setError(result.message)
+
+            }
+            if (result.cod !== "400" && result.cod !== "404") {
+                setWeatherData(result)
+                setError("")
+            }
+
+        } catch (error) {
+            setError("An Error occurred while fetching request")
+        } finally {
+            setLoading(false)
         }
-        console.log(result);
     };
     function ConvertToCelsius(temp) {
         let newTemp = temp - 273.15;
@@ -22,32 +38,49 @@ function WeatherAppComponent() {
     function lengthConverter(valNum) {
         let value = valNum * 0.0003048;
         return value.toFixed(2);
-      }
-       useEffect(()=>{getWeatherData();},[CityName])
-    return <div className={Styles.weather_card}>
-        {/* <input type="text" placeholder="Enter Your City" value={CityName} onChange={(e) => setCityName(e.target.value)} />
-        {WeatherData && (
-            <div>
-                <h3>CityName: {WeatherData?.name}</h3>
-                <h3>Country: {WeatherData?.sys?.country}</h3>
-                <h3>Temperature:{ConvertToCelsius(WeatherData?.main?.temp)}°C</h3>
-                <h3>Weather: {WeatherData.weather && WeatherData?.weather[0]?.description}</h3>
-                {WeatherData.weather &&
-                (<img className="weatherimg" alt="image1" src={ `${WeatherData?.weather[0].icon}.svg`} />)}
-            </div>)} */}
+    }
+    useEffect(() => { getWeatherData(); }, [CityName])
+
+
+    const getBackgroundImage = () => {
+        if (!getWeatherData) return null;
+
+        const weatherDescription =WeatherData?.weather && WeatherData?.weather[0]?.description.toLowerCase();
+        console.log(weatherDescription); 
+
+        if (weatherDescription&& weatherDescription.includes('clear sky')) {
+
+            return 'https://i.pinimg.com/originals/a9/37/d4/a937d47b0d3d47df7a4faf34f3ee61f3.gif';
+        } else if (weatherDescription.includes('haze')) {
+            return 'https://i.gifer.com/origin/8d/8d1c415cc7016510e1578b3b300a3ce2_w200.webp';
+        } else if (weatherDescription.includes('rain')) {
+            return 'https://i.pinimg.com/originals/96/df/d4/96dfd411ab0e68f8bc1eb47e4eee8771.gif';
+        }
+        console.log(weatherDescription.includes(''));
+
+        return 'https://i.pinimg.com/originals/02/3a/bf/023abf6fac6adaa2b9778c532f800f52.gif';
+    }
+    const backgroundStyle = {
+        backgroundImage: `url(${getBackgroundImage()})`,
+    };
+    return <div className={Styles.weather_card} style={{ backgroundImage: { backgroundStyle } }} >
 
         <input type="text" placeholder="Enter Your City Name" value={CityName} onChange={(e) => setCityName(e.target.value)} className={Styles.input_felid} />
+        {loading && <p style={{ textAlign: "center" }}>Loading.....</p>}
+        {error && <p style={{ textAlign: "center", color: "red" }}>Error: {error}</p>}
+
 
         {WeatherData && (
             <div>
                 <div className={Styles.weather_update}>
                     <div>
                         <h2>{WeatherData?.name}</h2>
-                    <p className={Styles.status}>{WeatherData.weather && WeatherData?.weather[0]?.description}</p>
-                    {WeatherData.weather &&
-                    (<img className={Styles.weather_icons} alt="image1" src={ `${WeatherData?.weather[0].icon}.svg`} />)}
+                        <p className={Styles.status}>{WeatherData.weather && WeatherData?.weather[0]?.description}</p>
+                        {WeatherData.weather &&
+                            (<img className={Styles.weather_icons} alt="image1" src={`${WeatherData?.weather[0].icon}.svg`} />)}
                     </div>
                     <h2 className={Styles.temp}>{ConvertToCelsius(WeatherData?.main?.temp)}°</h2>
+
                 </div>
                 <div className={Styles.weather_details}>
                     <div className={Styles.weather_01}>
