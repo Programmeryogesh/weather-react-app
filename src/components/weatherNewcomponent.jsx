@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from 'react';
 import Styles from "../styles/weather.module.css";
+import { ThreeDots } from 'react-loader-spinner'
 
 function WeatherAppComponent() {
     const [CityName, setCityName] = useState("");
@@ -17,6 +18,8 @@ function WeatherAppComponent() {
             let result = await respones.json();
             if (result.cod === "404") {
                 setError(result.message)
+                setWeatherData('')
+
 
             }
             if (result.cod !== "400" && result.cod !== "404") {
@@ -42,32 +45,41 @@ function WeatherAppComponent() {
     useEffect(() => { getWeatherData(); }, [CityName])
 
 
-    const getBackgroundImage = () => {
-        if (!getWeatherData) return null;
+    // const getBackgroundImage = () => {
+    //     if (!getWeatherData) return null;
 
-        const weatherDescription =WeatherData?.weather && WeatherData?.weather[0]?.description.toLowerCase();
-        console.log(weatherDescription); 
+    //     const weatherDescription =WeatherData?.weather && WeatherData?.weather[0]?.description.toLowerCase();
+    //     console.log(weatherDescription); 
 
-        if (weatherDescription&& weatherDescription.includes('clear sky')) {
+    //     if (weatherDescription&& weatherDescription.includes('clear sky')) {
 
-            return 'https://i.pinimg.com/originals/a9/37/d4/a937d47b0d3d47df7a4faf34f3ee61f3.gif';
-        } else if (weatherDescription.includes('haze')) {
-            return 'https://i.gifer.com/origin/8d/8d1c415cc7016510e1578b3b300a3ce2_w200.webp';
-        } else if (weatherDescription.includes('rain')) {
-            return 'https://i.pinimg.com/originals/96/df/d4/96dfd411ab0e68f8bc1eb47e4eee8771.gif';
-        }
-        console.log(weatherDescription.includes(''));
+    //         return 'https://i.pinimg.com/originals/a9/37/d4/a937d47b0d3d47df7a4faf34f3ee61f3.gif';
+    //     } else if (weatherDescription.includes('haze')) {
+    //         return 'https://i.gifer.com/origin/8d/8d1c415cc7016510e1578b3b300a3ce2_w200.webp';
+    //     } else if (weatherDescription.includes('rain')) {
+    //         return 'https://i.pinimg.com/originals/96/df/d4/96dfd411ab0e68f8bc1eb47e4eee8771.gif';
+    //     }
+    //     console.log(weatherDescription.includes(''));
 
-        return 'https://i.pinimg.com/originals/02/3a/bf/023abf6fac6adaa2b9778c532f800f52.gif';
-    }
-    const backgroundStyle = {
-        backgroundImage: `url(${getBackgroundImage()})`,
-    };
-    return <div className={Styles.weather_card} style={{ backgroundImage: { backgroundStyle } }} >
+    //     return 'https://i.pinimg.com/originals/02/3a/bf/023abf6fac6adaa2b9778c532f800f52.gif';
+    // }
+    // const backgroundStyle = {
+    //     backgroundImage: `url(${getBackgroundImage()})`,
+    // };
+    return <div className={Styles.weather_card} >
 
         <input type="text" placeholder="Enter Your City Name" value={CityName} onChange={(e) => setCityName(e.target.value)} className={Styles.input_felid} />
-        {loading && <p style={{ textAlign: "center" }}>Loading.....</p>}
-        {error && <p style={{ textAlign: "center", color: "red" }}>Error: {error}</p>}
+        {loading && <div style={{display:"flex",justifyContent:"center"}}><ThreeDots
+            height="80"
+            width="80"
+            radius="9"
+            color="#ffff"
+            ariaLabel="three-dots-loading"
+            wrapperStyle={{}}
+            wrapperClassName=""
+            visible={true}
+        /></div>}
+        {error && CityName &&<p style={{ textAlign: "center", color: "red" }}>Error: {error}</p>}
 
 
         {WeatherData && (

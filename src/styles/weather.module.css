@@ -1,12 +1,13 @@
 .weather_card{
     width: 350px;
-    /* background: url("https://i.pinimg.com/originals/02/3a/bf/023abf6fac6adaa2b9778c532f800f52.gif") no-repeat; */
+    background: url("https://i.pinimg.com/originals/02/3a/bf/023abf6fac6adaa2b9778c532f800f52.gif") no-repeat;
     background-size: cover;
     color: white;
     border-radius: 20px;
     border: none;
     overflow: auto;
     padding: 20px 0;
+    height: 600px;
 }
 .input_felid{
     padding: 10px 10px;
@@ -52,4 +53,18 @@
 ::placeholder {
     color:white;
     
+  }
+
+  @media screen and (max-width: 480px) {
+    body {
+      height: auto;
+    }
+    .weather_card{
+        width: 100%;
+        height: auto;
+    }
+    .weather_01{
+        width: 100%;
+        text-align: center;
+    }
   }
